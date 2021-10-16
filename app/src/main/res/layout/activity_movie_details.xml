@@ -108,7 +108,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:gravity="center"
-                        android:text="TextView"
+                        android:text="@string/null_text"
                         android:textAlignment="center"
                         android:textColor="@android:color/white"
                         android:textStyle="bold"
