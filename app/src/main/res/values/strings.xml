@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">MovieDB</string>
+    <string name="btn_hit">Hit API</string>
+    <string name="img">img</string>
+    <string name="subtitle">Sub title</string>
+    <string name="about_title">Overview:</string>
+    <string name="date_title">Release Date:</string>
+    <string name="rating_title">Popularity:</string>
+    <string name="language_title">Language:</string>
+    <string name="vote_average_title">Voting Average:</string>
+    <string name="rating_title_fix">Popularity Score:</string>
+    <string name="now_playing">NOW PLAYING NOW PLAYING NOW PLAYING NOW PLAYING NOW PLAYING NOW PLAYING NOW PLAYING NOW PLAYING NOW PLAYING NOW PLAYING</string>
+    <string name="null_text" />
+</resources>
