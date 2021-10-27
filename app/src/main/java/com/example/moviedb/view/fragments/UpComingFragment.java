@@ -134,38 +134,40 @@ public class UpComingFragment extends Fragment {
                     scroll_out_items = lm.findFirstVisibleItemPosition();
 
 //                    if (loading) {
-                    if ((current_items + scroll_out_items == total_items)&&is_scrolling) {
+                    if ((current_items + scroll_out_items == total_items)&& is_scrolling) {
                         is_scrolling = false;
                         Log.v("...", "Last Item!!");
                         //Wondering if page-- doesnt work;
                         page=page+1;
                         pb.setVisibility(View.VISIBLE);
                         view_model.getUpcoming(page);
-                        final Handler handler = new Handler();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                // Do something after 5s = 5000ms
-                                view_model.getResultUpcoming().observe(getActivity(), showUpcoming);
-                            }
-                        }, 500);
+                        view_model.getResultUpcoming().observe(getActivity(), showUpcoming);
+//                        final Handler handler = new Handler();
+//                        handler.postDelayed(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                // Do something after 5s = 5000ms
+//
+//                            }
+//                        }, 500);
 
 
-                    }else if ((page > 1) && (dy < 0)){
+                    }else if ((page > 1) && (dy < -0.5)){
                         if (lm.findFirstCompletelyVisibleItemPosition() == 0) {
                             Log.v("...", "First Item!!");
                             //Wondering if page-- doesnt work;
                             page=page-1;
                             pb.setVisibility(View.VISIBLE);
                             view_model.getUpcoming(page);
-                            final Handler handler = new Handler();
-                            handler.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    // Do something after 5s = 5000ms
-                                    view_model.getResultUpcoming().observe(getActivity(), showUpcoming);
-                                }
-                            }, 500);
+                            view_model.getResultUpcoming().observe(getActivity(), showUpcoming);
+//                            final Handler handler = new Handler();
+//                            handler.postDelayed(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    // Do something after 5s = 5000ms
+//
+//                                }
+//                            }, 500);
                         }
                     }
 //                    }

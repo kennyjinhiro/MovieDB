@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -116,6 +117,7 @@ public class NowPlayingFragment extends Fragment {
         lm = new LinearLayoutManager(getActivity());
         rv_now_playing.setLayoutManager(lm);
         pb.setVisibility(View.VISIBLE);
+
 //        int first_view = lm.findFirstVisibleItemPosition();
 
         //work
@@ -156,37 +158,39 @@ public class NowPlayingFragment extends Fragment {
                         is_scrolling = false;
                         Log.v("...", "Last Item!!");
                         //Wondering if page++ doesnt work;
-                        page=page+1;
+                        page = page + 1;
                         pb.setVisibility(View.VISIBLE);
                         view_model.getNowPlaying(page);
-                        final Handler handler = new Handler();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                // Do something after 5s = 5000ms
-                                view_model.getResultNowPlaying().observe(getActivity(), showNowPlaying);
-                            }
-                        }, 500);
+                        view_model.getResultNowPlaying().observe(getActivity(), showNowPlaying);
+//                        final Handler handler = new Handler();
+//                        handler.postDelayed(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                // Do something after 5s = 5000ms
+//                                view_model.getResultNowPlaying().observe(getActivity(), showNowPlaying);
+//                            }
+//                        }, 500);
+                    }
 
-                    } else if ((page > 1) && (dy < 0)){
-                        if(lm.findFirstCompletelyVisibleItemPosition() == 0) {
+                    else if ((page > 1) && (dy < -0.5)) {
+                        if (lm.findFirstCompletelyVisibleItemPosition() == 0) {
                             Log.v("...", "First Item!!");
                             pb.setVisibility(View.VISIBLE);
                             //Wondering if page-- doesnt work;
-                            page=page-1;
+                            page = page - 1;
                             view_model.getNowPlaying(page);
-
-                            final Handler handler = new Handler();
-                            handler.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    // Do something after 5s = 5000ms
-                                    view_model.getResultNowPlaying().observe(getActivity(), showNowPlaying);
-                                }
-                            }, 500);
+                            view_model.getResultNowPlaying().observe(getActivity(), showNowPlaying);
+//                            final Handler handler = new Handler();
+//                            handler.postDelayed(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    // Do something after 5s = 5000ms
+//
+//                                }
+//                            }, 500);
 
                         }
-                    }
+
 //                    } else if ((first_view > scroll_out_items)&&(dy<0)){
 //                        Log.v("...", "Last Item!!");
 //                        page--;
@@ -204,8 +208,10 @@ public class NowPlayingFragment extends Fragment {
 //                    }
 //                    }
 //                }
+                    }
             }
         });
+
         //end
 //        nsv.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
 //            @Override
@@ -252,10 +258,12 @@ public class NowPlayingFragment extends Fragment {
 //            lm = new GridLayoutManager(getActivity(), 2);
 
 //            rv_now_playing.setItemAnimator(new DefaultItemAnimator());
+//            Parcelable rv_save_state = rv_now_playing.getLayoutManager().onSaveInstanceState();
             NowPlayingAdapter adapter = new NowPlayingAdapter(getActivity());
             adapter.setListNowPlaying(nowPlaying.getResults());
             rv_now_playing.setAdapter(adapter);
-
+//            rv_now_playing.getLayoutManager().onRestoreInstanceState(rv_save_state);
+//            adapter.notifyItemInserted(nowPlaying.getResults().size());
 
 //            rv_now_playing.addOnScrollListener(new PaginationScrollListener(lm) {
 //                @Override
