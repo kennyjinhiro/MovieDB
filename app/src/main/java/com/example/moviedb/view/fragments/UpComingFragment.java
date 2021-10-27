@@ -11,6 +11,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -101,7 +102,7 @@ public class UpComingFragment extends Fragment {
         lm = new LinearLayoutManager(getActivity());
         rv_upcoming.setLayoutManager(lm);
 
-
+        //start
         rv_upcoming.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
@@ -136,22 +137,43 @@ public class UpComingFragment extends Fragment {
                     if ((current_items + scroll_out_items == total_items)&&is_scrolling) {
                         is_scrolling = false;
                         Log.v("...", "Last Item!!");
-                        page++;
+                        //Wondering if page-- doesnt work;
+                        page=page+1;
                         pb.setVisibility(View.VISIBLE);
                         view_model.getUpcoming(page);
-                        view_model.getResultUpcoming().observe(getActivity(), showUpcoming);
+                        final Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                // Do something after 5s = 5000ms
+                                view_model.getResultUpcoming().observe(getActivity(), showUpcoming);
+                            }
+                        }, 500);
 
-                    }else if ((lm.findFirstVisibleItemPosition() == 0) && (page > 1) && (dy < 0)){
-                        Log.v("...", "First Item!!");
-                        page--;
-                        pb.setVisibility(View.VISIBLE);
-                        view_model.getUpcoming(page);
-                        view_model.getResultUpcoming().observe(getActivity(), showUpcoming);
+
+                    }else if ((page > 1) && (dy < 0)){
+                        if (lm.findFirstCompletelyVisibleItemPosition() == 0) {
+                            Log.v("...", "First Item!!");
+                            //Wondering if page-- doesnt work;
+                            page=page-1;
+                            pb.setVisibility(View.VISIBLE);
+                            view_model.getUpcoming(page);
+                            final Handler handler = new Handler();
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    // Do something after 5s = 5000ms
+                                    view_model.getResultUpcoming().observe(getActivity(), showUpcoming);
+                                }
+                            }, 500);
+                        }
                     }
 //                    }
 //                }
             }
         });
+        //end
+
 
 //        nsv.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
 //            @Override

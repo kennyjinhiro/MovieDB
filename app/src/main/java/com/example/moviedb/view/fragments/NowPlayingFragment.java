@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -105,7 +106,7 @@ public class NowPlayingFragment extends Fragment {
 
         //Note
         rv_now_playing = view.findViewById(R.id.rv_now_playing_fragment);
-//        nsv = view.findViewById(R.id.scrollview_now_playing_fragment);
+//        nsv = view.findViewById(R.id.nested_now_playing_fragment);
         pb = view.findViewById(R.id.progress_bar_now_playing_fragment);
 
 //        pb = view.findViewById(R.id.progress_now_playing);
@@ -116,6 +117,23 @@ public class NowPlayingFragment extends Fragment {
         rv_now_playing.setLayoutManager(lm);
         pb.setVisibility(View.VISIBLE);
 //        int first_view = lm.findFirstVisibleItemPosition();
+
+        //work
+//        nsv.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+//            @Override
+//            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+//                if (scrollY == v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight()){
+//                    Log.v("...", "Last Item!!");
+//                    page++;
+//                    pb.setVisibility(View.VISIBLE);
+//                    view_model.getNowPlaying(page);
+//                    view_model.getResultNowPlaying().observe(getActivity(), showNowPlaying);
+//                }
+//            }
+//        });
+
+
+        //start
         rv_now_playing.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
@@ -137,16 +155,37 @@ public class NowPlayingFragment extends Fragment {
                     if ((current_items + scroll_out_items >= total_items) && is_scrolling) {
                         is_scrolling = false;
                         Log.v("...", "Last Item!!");
-                        page++;
+                        //Wondering if page++ doesnt work;
+                        page=page+1;
                         pb.setVisibility(View.VISIBLE);
                         view_model.getNowPlaying(page);
-                        view_model.getResultNowPlaying().observe(getActivity(), showNowPlaying);
-                    } else if ((lm.findFirstVisibleItemPosition() == 0) && (page > 1) && (dy < 0)){
-                        Log.v("...", "First Item!!");
-                        page--;
-                        pb.setVisibility(View.VISIBLE);
-                        view_model.getNowPlaying(page);
-                        view_model.getResultNowPlaying().observe(getActivity(), showNowPlaying);
+                        final Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                // Do something after 5s = 5000ms
+                                view_model.getResultNowPlaying().observe(getActivity(), showNowPlaying);
+                            }
+                        }, 500);
+
+                    } else if ((page > 1) && (dy < 0)){
+                        if(lm.findFirstCompletelyVisibleItemPosition() == 0) {
+                            Log.v("...", "First Item!!");
+                            pb.setVisibility(View.VISIBLE);
+                            //Wondering if page-- doesnt work;
+                            page=page-1;
+                            view_model.getNowPlaying(page);
+
+                            final Handler handler = new Handler();
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    // Do something after 5s = 5000ms
+                                    view_model.getResultNowPlaying().observe(getActivity(), showNowPlaying);
+                                }
+                            }, 500);
+
+                        }
                     }
 //                    } else if ((first_view > scroll_out_items)&&(dy<0)){
 //                        Log.v("...", "Last Item!!");
@@ -167,6 +206,7 @@ public class NowPlayingFragment extends Fragment {
 //                }
             }
         });
+        //end
 //        nsv.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
 //            @Override
 //            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
@@ -208,7 +248,6 @@ public class NowPlayingFragment extends Fragment {
         public void onChanged(NowPlaying nowPlaying) {
             //handler
             pb.setVisibility(View.INVISIBLE);
-            rv_now_playing.setVisibility(View.VISIBLE);
 
 //            lm = new GridLayoutManager(getActivity(), 2);
 
