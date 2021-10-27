@@ -11,4 +11,13 @@
     <string name="rating_title_fix">Popularity Score:</string>
     <string name="now_playing">NOW PLAYING NOW PLAYING NOW PLAYING NOW PLAYING NOW PLAYING NOW PLAYING NOW PLAYING NOW PLAYING NOW PLAYING NOW PLAYING</string>
     <string name="null_text" />
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="upcoming1">Up Coming</string>
+    <string name="nowplaying1">Now Playing</string>
+    <string name="company_title">Production Companies</string>
+    <string name="company">Producing</string>
+    <string name="company_fix">Producing Companies</string>
+    <string name="scroll">Scroll Right</string>
+    <string name="a_null" />
 </resources>

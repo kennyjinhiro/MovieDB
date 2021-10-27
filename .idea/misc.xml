@@ -6,10 +6,21 @@
         <entry key="..\:/Android Studio Projects/MovieDB/app/src/main/res/drawable/gradient_bnw.xml" value="0.2703125" />
         <entry key="..\:/Android Studio Projects/MovieDB/app/src/main/res/drawable/gradient_gnw.xml" value="0.2703125" />
         <entry key="..\:/Android Studio Projects/MovieDB/app/src/main/res/drawable/ic_launcher_background.xml" value="0.2703125" />
+        <entry key="..\:/Android Studio Projects/MovieDB/app/src/main/res/drawable/ic_now_playing_24.xml" value="0.2703125" />
+        <entry key="..\:/Android Studio Projects/MovieDB/app/src/main/res/drawable/ic_nowplaying_24.xml" value="0.2703125" />
+        <entry key="..\:/Android Studio Projects/MovieDB/app/src/main/res/drawable/ic_upcoming_24.xml" value="0.2703125" />
         <entry key="..\:/Android Studio Projects/MovieDB/app/src/main/res/layout/activity_main.xml" value="0.2" />
+        <entry key="..\:/Android Studio Projects/MovieDB/app/src/main/res/layout/activity_main_menu.xml" value="0.264" />
         <entry key="..\:/Android Studio Projects/MovieDB/app/src/main/res/layout/activity_movie_details.xml" value="0.35014005602240894" />
         <entry key="..\:/Android Studio Projects/MovieDB/app/src/main/res/layout/activity_now_playing.xml" value="0.264" />
-        <entry key="..\:/Android Studio Projects/MovieDB/app/src/main/res/layout/card_now_playing.xml" value="0.536" />
+        <entry key="..\:/Android Studio Projects/MovieDB/app/src/main/res/layout/card_companies.xml" value="0.25416666666666665" />
+        <entry key="..\:/Android Studio Projects/MovieDB/app/src/main/res/layout/card_now_playing.xml" value="0.223731884057971" />
+        <entry key="..\:/Android Studio Projects/MovieDB/app/src/main/res/layout/chip_item.xml" value="0.2" />
+        <entry key="..\:/Android Studio Projects/MovieDB/app/src/main/res/layout/fragment_movie_details.xml" value="0.264" />
+        <entry key="..\:/Android Studio Projects/MovieDB/app/src/main/res/layout/fragment_now_playing.xml" value="0.144" />
+        <entry key="..\:/Android Studio Projects/MovieDB/app/src/main/res/layout/fragment_up_coming.xml" value="0.22282608695652173" />
+        <entry key="..\:/Android Studio Projects/MovieDB/app/src/main/res/layout/progress_main.xml" value="0.25416666666666665" />
+        <entry key="..\:/Android Studio Projects/MovieDB/app/src/main/res/menu/main_menu.xml" value="0.25416666666666665" />
       </map>
     </option>
   </component>

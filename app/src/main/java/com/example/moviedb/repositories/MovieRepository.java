@@ -6,6 +6,7 @@ import com.example.moviedb.helper.Const;
 import com.example.moviedb.model.Genre;
 import com.example.moviedb.model.Movies;
 import com.example.moviedb.model.NowPlaying;
+import com.example.moviedb.model.Upcoming;
 import com.example.moviedb.retrofit.ApiService;
 
 import java.util.List;
@@ -45,10 +46,10 @@ public class MovieRepository {
         return result;
     }
 
-    public MutableLiveData<NowPlaying> getNowPlayingData(){
+    public MutableLiveData<NowPlaying> getNowPlayingData(int page_now_playing){
         final MutableLiveData<NowPlaying> result = new MutableLiveData<>();
 
-        ApiService.endpoint().getNowPlaying(Const.API_KEY).enqueue(new Callback<NowPlaying>() {
+        ApiService.endpoint().getNowPlaying(Const.API_KEY,page_now_playing).enqueue(new Callback<NowPlaying>() {
             @Override
             public void onResponse(Call<NowPlaying> call, Response<NowPlaying> response) {
                 result.setValue(response.body());
@@ -56,6 +57,24 @@ public class MovieRepository {
 
             @Override
             public void onFailure(Call<NowPlaying> call, Throwable t) {
+
+            }
+        });
+
+        return result;
+    }
+
+    public MutableLiveData<Upcoming> getUpcomingData(int page_up_coming){
+        final MutableLiveData<Upcoming> result = new MutableLiveData<>();
+
+        ApiService.endpoint().getUpcoming(Const.API_KEY,page_up_coming).enqueue(new Callback<Upcoming>() {
+            @Override
+            public void onResponse(Call<Upcoming> call, Response<Upcoming> response) {
+                result.setValue(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<Upcoming> call, Throwable t) {
 
             }
         });
@@ -80,13 +99,7 @@ public class MovieRepository {
                 for (int i = 0; i < size_nowplaying; i++){
                     for (int j = 0; j < list_genre.size(); j++){
                         if (nowplaying_genrelist.get(i) == list_genre.get(j).getId()){
-                            if(i == size_nowplaying - 1){
-                                resultString += list_genre.get(j).getName();
-                            }
-                            else {
-                                resultString += list_genre.get(j).getName() + ", ";
-                                print_count++;
-                            }
+                            resultString += list_genre.get(j).getName();
                         }
 //                        if ((print_count == size_nowplaying) && (nowplaying_genrelist.get(i) == list_genre.get(j).getId())){
 //                            resultString += list_genre.get(i).getName();

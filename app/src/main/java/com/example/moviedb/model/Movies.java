@@ -331,11 +331,30 @@ public class Movies implements Parcelable {
         }
     }
 
-    public static class ProductionCompanies {
+    public static class ProductionCompanies implements Parcelable {
         private int id;
         private String logo_path;
         private String name;
         private String origin_country;
+
+        protected ProductionCompanies(Parcel in) {
+            id = in.readInt();
+            logo_path = in.readString();
+            name = in.readString();
+            origin_country = in.readString();
+        }
+
+        public static final Creator<ProductionCompanies> CREATOR = new Creator<ProductionCompanies>() {
+            @Override
+            public ProductionCompanies createFromParcel(Parcel in) {
+                return new ProductionCompanies(in);
+            }
+
+            @Override
+            public ProductionCompanies[] newArray(int size) {
+                return new ProductionCompanies[size];
+            }
+        };
 
         public static ProductionCompanies objectFromData(String str) {
 
@@ -372,6 +391,19 @@ public class Movies implements Parcelable {
 
         public void setOrigin_country(String origin_country) {
             this.origin_country = origin_country;
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel parcel, int i) {
+            parcel.writeInt(id);
+            parcel.writeString(logo_path);
+            parcel.writeString(name);
+            parcel.writeString(origin_country);
         }
     }
 
