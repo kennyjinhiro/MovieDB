@@ -98,6 +98,7 @@ public class UpComingFragment extends Fragment {
 
         rv_upcoming = view.findViewById(R.id.rv_up_coming_fragment);
         view_model = new ViewModelProvider(getActivity()).get(MovieViewModel.class);
+        view_model.clearUpComing();
         view_model.getUpcoming(page);
 
         pb.setVisibility(View.VISIBLE);
@@ -148,7 +149,7 @@ public class UpComingFragment extends Fragment {
                         public void onChanged(List<Upcoming.Results> results) {
                             pb.setVisibility(View.INVISIBLE);
 
-                            adapter.setListUpcoming(results);
+//                            adapter.setListUpcoming(results);
                             adapter.notifyDataSetChanged();
                             ItemClickSupport.addTo(rv_upcoming).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
                                 @Override

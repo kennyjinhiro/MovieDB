@@ -95,7 +95,7 @@ public class MovieRepository {
         });
         return result;
     }
-
+    public void clearDataNowPlaying(){list_now_playing.clear();};
     private ArrayList<Upcoming.Results> list_upcoming = new ArrayList<>();
     public MutableLiveData<List<Upcoming.Results>> getUpcomingData(int page_up_coming){
         final MutableLiveData<List<Upcoming.Results>> result = new MutableLiveData<>();
@@ -117,6 +117,7 @@ public class MovieRepository {
 
         return result;
     }
+    public void clearDataUpComing(){list_upcoming.clear();};
 
     public MutableLiveData<String> getGenreData(List<Integer> nowplaying_genrelist){
         final MutableLiveData<String> result = new MutableLiveData<>();
@@ -154,4 +155,5 @@ public class MovieRepository {
         });
         return result;
     }
+
 }

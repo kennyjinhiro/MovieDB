@@ -30,7 +30,7 @@ import com.example.moviedb.view.activities.NowPlayingActivity;
 import com.example.moviedb.viewmodel.MovieViewModel;
 import com.example.moviedb.helper.ItemClickSupport;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
+import com.example.moviedb.repositories.MovieRepository;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -106,7 +106,6 @@ public class NowPlayingFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_now_playing, container, false);
 
 
-
         //Note
         rv_now_playing = view.findViewById(R.id.rv_now_playing_fragment);
 //        nsv = view.findViewById(R.id.nested_now_playing_fragment);
@@ -116,6 +115,7 @@ public class NowPlayingFragment extends Fragment {
 //        pb.setVisibility(View.VISIBLE);
         view_model = new ViewModelProvider(getActivity()).get(MovieViewModel.class);
         view_model.getNowPlaying(page);
+        view_model.clearNowPlaying();
         lm = new LinearLayoutManager(getActivity());
         rv_now_playing.setLayoutManager(lm);
         pb.setVisibility(View.VISIBLE);
@@ -167,7 +167,6 @@ public class NowPlayingFragment extends Fragment {
                             @Override
                             public void onChanged(List<NowPlaying.Results> list) {
                                 pb.setVisibility(View.INVISIBLE);
-                                adapter.setListNowPlaying(list);
                                 adapter.notifyDataSetChanged();
                                 ItemClickSupport.addTo(rv_now_playing).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
                                     @Override
