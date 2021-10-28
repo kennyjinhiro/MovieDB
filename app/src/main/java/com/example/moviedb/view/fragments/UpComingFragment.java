@@ -149,7 +149,7 @@ public class UpComingFragment extends Fragment {
                             pb.setVisibility(View.INVISIBLE);
 
                             adapter.setListUpcoming(results);
-                            rv_upcoming.setAdapter(adapter);
+                            adapter.notifyDataSetChanged();
                             ItemClickSupport.addTo(rv_upcoming).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
                                 @Override
                                 public void onItemClicked(RecyclerView recyclerView, int position, View v) {
