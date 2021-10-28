@@ -9,6 +9,7 @@ import com.example.moviedb.model.NowPlaying;
 import com.example.moviedb.model.Upcoming;
 import com.example.moviedb.retrofit.ApiService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -46,31 +47,66 @@ public class MovieRepository {
         return result;
     }
 
-    public MutableLiveData<NowPlaying> getNowPlayingData(int page_now_playing){
-        final MutableLiveData<NowPlaying> result = new MutableLiveData<>();
+    //ArrayList to keep previous nowplaying
+//    public MutableLiveData<NowPlaying> getNowPlayingData(int page_now_playing){
+//        final MutableLiveData<NowPlaying> result = new MutableLiveData<>();
+//        ApiService.endpoint().getNowPlaying(Const.API_KEY,page_now_playing).enqueue(new Callback<NowPlaying>() {
+//            @Override
+//            public void onResponse(Call<NowPlaying> call, Response<NowPlaying> response) {
+//                result.setValue(response.body());
+//            }
+//
+//            @Override
+//            public void onFailure(Call<NowPlaying> call, Throwable t) {
+//
+//            }
+//        });
+//
+//        return result;
+//    }
 
+
+
+
+
+
+    private ArrayList<NowPlaying.Results> list_now_playing = new ArrayList<>();
+
+    //IN API RESULTS
+    // if we return results we get object array of one movie
+    public MutableLiveData<List<NowPlaying.Results>> getNowPlayingData(int page_now_playing){
+        final MutableLiveData<List<NowPlaying.Results>> result = new MutableLiveData<>();
         ApiService.endpoint().getNowPlaying(Const.API_KEY,page_now_playing).enqueue(new Callback<NowPlaying>() {
+
+
             @Override
             public void onResponse(Call<NowPlaying> call, Response<NowPlaying> response) {
-                result.setValue(response.body());
+                for (NowPlaying.Results i : response.body().getResults()){
+                    list_now_playing.add(i);
+                }
+                result.setValue((List<NowPlaying.Results>) list_now_playing);
             }
 
             @Override
             public void onFailure(Call<NowPlaying> call, Throwable t) {
 
             }
-        });
 
+        });
         return result;
     }
 
-    public MutableLiveData<Upcoming> getUpcomingData(int page_up_coming){
-        final MutableLiveData<Upcoming> result = new MutableLiveData<>();
+    private ArrayList<Upcoming.Results> list_upcoming = new ArrayList<>();
+    public MutableLiveData<List<Upcoming.Results>> getUpcomingData(int page_up_coming){
+        final MutableLiveData<List<Upcoming.Results>> result = new MutableLiveData<>();
 
         ApiService.endpoint().getUpcoming(Const.API_KEY,page_up_coming).enqueue(new Callback<Upcoming>() {
             @Override
             public void onResponse(Call<Upcoming> call, Response<Upcoming> response) {
-                result.setValue(response.body());
+                for(Upcoming.Results i : response.body().getResults()){
+                    list_upcoming.add(i);
+                }
+                result.setValue(list_upcoming);
             }
 
             @Override

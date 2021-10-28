@@ -32,6 +32,11 @@ public class NowPlayingAdapter extends RecyclerView.Adapter<NowPlayingAdapter.Ca
     public void setListNowPlaying(List<NowPlaying.Results> listNowPlaying){
         this.listNowPlaying = listNowPlaying;
     }
+    public void addListNowPlaying(List<NowPlaying.Results> listNowPlaying){
+        for (int i = 0; i < listNowPlaying.size(); i++) {
+            this.listNowPlaying.add(listNowPlaying.get(i));
+        }
+    }
     public NowPlayingAdapter(Context context){
         this.context = context;
     }

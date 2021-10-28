@@ -28,6 +28,7 @@ import com.example.moviedb.model.Upcoming;
 import com.example.moviedb.viewmodel.MovieViewModel;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -85,6 +86,7 @@ public class UpComingFragment extends Fragment {
     int current_items, total_items, scroll_out_items;
     LinearLayoutManager lm;
     private boolean loading = true;
+    UpcomingAdapter adapter;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -101,7 +103,7 @@ public class UpComingFragment extends Fragment {
         pb.setVisibility(View.VISIBLE);
         lm = new LinearLayoutManager(getActivity());
         rv_upcoming.setLayoutManager(lm);
-
+        adapter = new UpcomingAdapter(getActivity());
         //start
         rv_upcoming.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -129,19 +131,46 @@ public class UpComingFragment extends Fragment {
 //                    }
 //                }
 //                if(dy > 0) {
-                    current_items = lm.getChildCount();
-                    total_items = lm.getItemCount();
-                    scroll_out_items = lm.findFirstVisibleItemPosition();
+                current_items = lm.getChildCount();
+                total_items = lm.getItemCount();
+                scroll_out_items = lm.findFirstVisibleItemPosition();
 
 //                    if (loading) {
-                    if ((current_items + scroll_out_items == total_items)&& is_scrolling) {
-                        is_scrolling = false;
-                        Log.v("...", "Last Item!!");
-                        //Wondering if page-- doesnt work;
-                        page=page+1;
-                        pb.setVisibility(View.VISIBLE);
-                        view_model.getUpcoming(page);
-                        view_model.getResultUpcoming().observe(getActivity(), showUpcoming);
+                if ((current_items + scroll_out_items == total_items) && is_scrolling) {
+                    is_scrolling = false;
+                    Log.v("...", "Last Item!!");
+                    //Wondering if page-- doesnt work;
+                    page = page + 1;
+                    pb.setVisibility(View.VISIBLE);
+                    view_model.getUpcoming(page);
+                    view_model.getResultUpcoming().observe(getActivity(), new Observer<List<Upcoming.Results>>() {
+                        @Override
+                        public void onChanged(List<Upcoming.Results> results) {
+                            pb.setVisibility(View.INVISIBLE);
+
+                            adapter.setListUpcoming(results);
+                            rv_upcoming.setAdapter(adapter);
+                            ItemClickSupport.addTo(rv_upcoming).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
+                                @Override
+                                public void onItemClicked(RecyclerView recyclerView, int position, View v) {
+                                    Bundle bundle = new Bundle();
+                                    bundle.putString("title_bundle",results.get(position).getTitle());
+                                    bundle.putString("backdrop_bundle",results.get(position).getBackdrop_path());
+                                    bundle.putInt("id_bundle",results.get(position).getId());
+                                    bundle.putString("poster_bundle",results.get(position).getPoster_path());
+                                    bundle.putDouble("popularity_bundle",results.get(position).getPopularity());
+                                    bundle.putString("date_bundle",results.get(position).getRelease_date());
+                                    bundle.putDouble("avgvote_bundle",results.get(position).getVote_average());
+                                    bundle.putInt("vote_bundle",results.get(position).getVote_count());
+                                    bundle.putString("overview_bundle",results.get(position).getOverview());
+                                    bundle.putIntegerArrayList("genre_bundle",(ArrayList<Integer>) results.get(position).getGenre_ids());
+                                    bundle.putString("language_bundle",results.get(position).getOriginal_language());
+                                    bundle.putString("from_bundle","Up Coming");
+                                    Navigation.findNavController(v).navigate(R.id.action_upComingFragment_to_movieDetailsFragment,bundle);
+                                }
+                            });
+                        }
+                    });
 //                        final Handler handler = new Handler();
 //                        handler.postDelayed(new Runnable() {
 //                            @Override
@@ -151,28 +180,29 @@ public class UpComingFragment extends Fragment {
 //                            }
 //                        }, 500);
 
-
-                    }else if ((page > 1) && (dy < -0.5)){
-                        if (lm.findFirstCompletelyVisibleItemPosition() == 0) {
-                            Log.v("...", "First Item!!");
-                            //Wondering if page-- doesnt work;
-                            page=page-1;
-                            pb.setVisibility(View.VISIBLE);
-                            view_model.getUpcoming(page);
-                            view_model.getResultUpcoming().observe(getActivity(), showUpcoming);
-//                            final Handler handler = new Handler();
-//                            handler.postDelayed(new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    // Do something after 5s = 5000ms
-//
-//                                }
-//                            }, 500);
-                        }
-                    }
-//                    }
-//                }
+                }
             }
+//                    }else if ((page > 1) && (dy < -0.5)){
+//                        if (lm.findFirstCompletelyVisibleItemPosition() == 0) {
+//                            Log.v("...", "First Item!!");
+//                            //Wondering if page-- doesnt work;
+//                            page=page-1;
+//                            pb.setVisibility(View.VISIBLE);
+//                            view_model.getUpcoming(page);
+//                            view_model.getResultUpcoming().observe(getActivity(), showUpcoming);
+////                            final Handler handler = new Handler();
+////                            handler.postDelayed(new Runnable() {
+////                                @Override
+////                                public void run() {
+////                                    // Do something after 5s = 5000ms
+////
+////                                }
+////                            }, 500);
+//                        }
+//                    }
+////                    }
+////                }
+//            }
         });
         //end
 
@@ -202,15 +232,15 @@ public class UpComingFragment extends Fragment {
         return view;
     }
 
-    private Observer<Upcoming> showUpcoming = new Observer<Upcoming>() {
+    private Observer<List<Upcoming.Results>> showUpcoming = new Observer<List<Upcoming.Results>>() {
 
-        @Override
-        public void onChanged(Upcoming upcoming) {
-            pb.setVisibility(View.INVISIBLE);
-            UpcomingAdapter adapter = new UpcomingAdapter(getActivity());
+            @Override
+            public void onChanged(List<Upcoming.Results> results) {
+                pb.setVisibility(View.INVISIBLE);
 
-            rv_upcoming.setAdapter(adapter);
-            adapter.setListUpcoming(upcoming.getResults());
+                adapter.setListUpcoming(results);
+                rv_upcoming.setAdapter(adapter);
+
 //            nsv.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
 //                @Override
 //                public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
@@ -231,32 +261,34 @@ public class UpComingFragment extends Fragment {
 //                    }
 //                }
 //            });
-            ItemClickSupport.addTo(rv_upcoming).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
-                @Override
-                public void onItemClicked(RecyclerView recyclerView, int position, View v) {
-                    Bundle bundle = new Bundle();
-                    bundle.putString("title_bundle",upcoming.getResults().get(position).getTitle());
-                    bundle.putString("backdrop_bundle",upcoming.getResults().get(position).getBackdrop_path());
-                    bundle.putInt("id_bundle",upcoming.getResults().get(position).getId());
-                    bundle.putString("poster_bundle",upcoming.getResults().get(position).getPoster_path());
-                    bundle.putDouble("popularity_bundle",upcoming.getResults().get(position).getPopularity());
-                    bundle.putString("date_bundle",upcoming.getResults().get(position).getRelease_date());
-                    bundle.putDouble("avgvote_bundle",upcoming.getResults().get(position).getVote_average());
-                    bundle.putInt("vote_bundle",upcoming.getResults().get(position).getVote_count());
-                    bundle.putString("overview_bundle",upcoming.getResults().get(position).getOverview());
-                    bundle.putIntegerArrayList("genre_bundle",(ArrayList<Integer>) upcoming.getResults().get(position).getGenre_ids());
-                    bundle.putString("language_bundle",upcoming.getResults().get(position).getOriginal_language());
-                    bundle.putString("from_bundle","Up Coming");
-                    Navigation.findNavController(v).navigate(R.id.action_upComingFragment_to_movieDetailsFragment,bundle);
-                }
-            });
-        }
+                ItemClickSupport.addTo(rv_upcoming).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
+                    @Override
+                    public void onItemClicked(RecyclerView recyclerView, int position, View v) {
+                        Bundle bundle = new Bundle();
+                        bundle.putString("title_bundle",results.get(position).getTitle());
+                        bundle.putString("backdrop_bundle",results.get(position).getBackdrop_path());
+                        bundle.putInt("id_bundle",results.get(position).getId());
+                        bundle.putString("poster_bundle",results.get(position).getPoster_path());
+                        bundle.putDouble("popularity_bundle",results.get(position).getPopularity());
+                        bundle.putString("date_bundle",results.get(position).getRelease_date());
+                        bundle.putDouble("avgvote_bundle",results.get(position).getVote_average());
+                        bundle.putInt("vote_bundle",results.get(position).getVote_count());
+                        bundle.putString("overview_bundle",results.get(position).getOverview());
+                        bundle.putIntegerArrayList("genre_bundle",(ArrayList<Integer>) results.get(position).getGenre_ids());
+                        bundle.putString("language_bundle",results.get(position).getOriginal_language());
+                        bundle.putString("from_bundle","Up Coming");
+                        Navigation.findNavController(v).navigate(R.id.action_upComingFragment_to_movieDetailsFragment,bundle);
+                    }
+                });
+            }
+
+
     };
 
-    public boolean isLastVisible() {
-        LinearLayoutManager layoutManager = (LinearLayoutManager) rv_upcoming.getLayoutManager();
-        int pos = layoutManager.findLastCompletelyVisibleItemPosition();
-        int numItems = rv_upcoming.getAdapter().getItemCount();
-        return (pos >= numItems - 1);
-    }
+//    public boolean isLastVisible() {
+//        LinearLayoutManager layoutManager = (LinearLayoutManager) rv_upcoming.getLayoutManager();
+//        int pos = layoutManager.findLastCompletelyVisibleItemPosition();
+//        int numItems = rv_upcoming.getAdapter().getItemCount();
+//        return (pos >= numItems - 1);
+//    }
 }

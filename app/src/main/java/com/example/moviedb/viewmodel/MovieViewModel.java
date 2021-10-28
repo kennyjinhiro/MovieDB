@@ -4,6 +4,7 @@ import android.app.Application;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -15,7 +16,10 @@ import com.example.moviedb.model.Upcoming;
 import com.example.moviedb.repositories.MovieRepository;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 public class MovieViewModel extends AndroidViewModel {
     private MovieRepository repository;
@@ -38,21 +42,21 @@ public class MovieViewModel extends AndroidViewModel {
 
 
     //Begin of viewmodel get nowplaying by id
-    private MutableLiveData<NowPlaying> resultGetNowPlaying = new MutableLiveData<>();
+    private MutableLiveData<List<NowPlaying.Results>> resultGetNowPlaying = new MutableLiveData<>();
     public void getNowPlaying(int page){
         resultGetNowPlaying = repository.getNowPlayingData(page);
     }
-    public LiveData<NowPlaying> getResultNowPlaying(){
+    public LiveData<List<NowPlaying.Results>> getResultNowPlaying(){
         return resultGetNowPlaying;
     }
     //End of viewmodel get nowplaying by id
 
     //Begin of viewmodel get nowplaying by id
-    private MutableLiveData<Upcoming> resultGetUpcoming = new MutableLiveData<>();
+    private MutableLiveData<List<Upcoming.Results>> resultGetUpcoming = new MutableLiveData<>();
     public void getUpcoming(int page){
         resultGetUpcoming = repository.getUpcomingData(page);
     }
-    public LiveData<Upcoming> getResultUpcoming(){
+    public LiveData<List<Upcoming.Results>> getResultUpcoming(){
         return resultGetUpcoming;
     }
     //End of viewmodel get nowplaying by id

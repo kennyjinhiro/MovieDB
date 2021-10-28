@@ -32,6 +32,7 @@ import com.example.moviedb.helper.ItemClickSupport;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -92,6 +93,7 @@ public class NowPlayingFragment extends Fragment {
     int current_items, total_items, scroll_out_items,first_item;
     boolean is_scrolling = false;
     boolean loading = true;
+    NowPlayingAdapter adapter;
 //    private static final int start_page = 1;
 //    private boolean isLoading = false;
 //    private boolean isLastPage = false;
@@ -117,7 +119,7 @@ public class NowPlayingFragment extends Fragment {
         lm = new LinearLayoutManager(getActivity());
         rv_now_playing.setLayoutManager(lm);
         pb.setVisibility(View.VISIBLE);
-
+        adapter = new NowPlayingAdapter(getActivity());
 //        int first_view = lm.findFirstVisibleItemPosition();
 
         //work
@@ -161,7 +163,35 @@ public class NowPlayingFragment extends Fragment {
                         page = page + 1;
                         pb.setVisibility(View.VISIBLE);
                         view_model.getNowPlaying(page);
-                        view_model.getResultNowPlaying().observe(getActivity(), showNowPlaying);
+                        view_model.getResultNowPlaying().observe(getActivity(), new Observer<List<NowPlaying.Results>>() {
+                            @Override
+                            public void onChanged(List<NowPlaying.Results> list) {
+                                pb.setVisibility(View.INVISIBLE);
+                                adapter.setListNowPlaying(list);
+                                adapter.notifyDataSetChanged();
+                                ItemClickSupport.addTo(rv_now_playing).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
+                                    @Override
+                                    public void onItemClicked(RecyclerView recyclerView, int position, View v) {
+                                        Bundle bundle = new Bundle();
+                                        bundle.putString("title_bundle",list.get(position).getTitle());
+                                        bundle.putString("backdrop_bundle",list.get(position).getBackdrop_path());
+                                        bundle.putInt("id_bundle",list.get(position).getId());
+                                        bundle.putString("poster_bundle",list.get(position).getPoster_path());
+                                        bundle.putDouble("popularity_bundle",list.get(position).getPopularity());
+                                        bundle.putString("date_bundle",list.get(position).getRelease_date());
+                                        bundle.putDouble("avgvote_bundle",list.get(position).getVote_average());
+                                        bundle.putInt("vote_bundle",list.get(position).getVote_count());
+                                        bundle.putString("overview_bundle",list.get(position).getOverview());
+                                        bundle.putIntegerArrayList("genre_bundle",(ArrayList<Integer>) list.get(position).getGenre_ids());
+                                        bundle.putString("language_bundle",list.get(position).getOriginal_language());
+                                        bundle.putString("from_bundle","Now Playing");
+                                        Navigation.findNavController(v).navigate(R.id.action_nowPlayingFragment_to_movieDetailsFragment,bundle);
+                                    }
+                                });
+                            }
+
+                        });
+
 //                        final Handler handler = new Handler();
 //                        handler.postDelayed(new Runnable() {
 //                            @Override
@@ -172,43 +202,43 @@ public class NowPlayingFragment extends Fragment {
 //                        }, 500);
                     }
 
-                    else if ((page > 1) && (dy < -0.5)) {
-                        if (lm.findFirstCompletelyVisibleItemPosition() == 0) {
-                            Log.v("...", "First Item!!");
-                            pb.setVisibility(View.VISIBLE);
-                            //Wondering if page-- doesnt work;
-                            page = page - 1;
-                            view_model.getNowPlaying(page);
-                            view_model.getResultNowPlaying().observe(getActivity(), showNowPlaying);
-//                            final Handler handler = new Handler();
-//                            handler.postDelayed(new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    // Do something after 5s = 5000ms
+//                    else if ((page > 1) && (dy < -0.5)) {
+//                        if (lm.findFirstCompletelyVisibleItemPosition() == 0) {
+//                            Log.v("...", "First Item!!");
+//                            pb.setVisibility(View.VISIBLE);
+//                            //Wondering if page-- doesnt work;
+//                            page = page - 1;
+//                            view_model.getNowPlaying(page);
+//                            view_model.getResultNowPlaying().observe(getActivity(), showNowPlaying);
+////                            final Handler handler = new Handler();
+////                            handler.postDelayed(new Runnable() {
+////                                @Override
+////                                public void run() {
+////                                    // Do something after 5s = 5000ms
+////
+////                                }
+////                            }, 500);
 //
-//                                }
-//                            }, 500);
-
-                        }
-
-//                    } else if ((first_view > scroll_out_items)&&(dy<0)){
-//                        Log.v("...", "Last Item!!");
-//                        page--;
-//                        pb.setVisibility(View.VISIBLE);
-//                        view_model.getNowPlaying(page);
-//                        view_model.getResultNowPlaying().observe(getActivity(), showNowPlaying);
+//                        }
+//
+////                    } else if ((first_view > scroll_out_items)&&(dy<0)){
+////                        Log.v("...", "Last Item!!");
+////                        page--;
+////                        pb.setVisibility(View.VISIBLE);
+////                        view_model.getNowPlaying(page);
+////                        view_model.getResultNowPlaying().observe(getActivity(), showNowPlaying);
+////                    }
+////                    else if ((first_item == 1) && is_scrolling ){
+////                        is_scrolling = false;
+////                        Log.v("...", "Last Item!!");
+////                        page--;
+////                        pb.setVisibility(View.VISIBLE);
+////                        view_model.getNowPlaying(page);
+////                        view_model.getResultNowPlaying().observe(getActivity(), showNowPlaying);
+////                    }
+////                    }
+////                }
 //                    }
-//                    else if ((first_item == 1) && is_scrolling ){
-//                        is_scrolling = false;
-//                        Log.v("...", "Last Item!!");
-//                        page--;
-//                        pb.setVisibility(View.VISIBLE);
-//                        view_model.getNowPlaying(page);
-//                        view_model.getResultNowPlaying().observe(getActivity(), showNowPlaying);
-//                    }
-//                    }
-//                }
-                    }
             }
         });
 
@@ -249,9 +279,9 @@ public class NowPlayingFragment extends Fragment {
     }
 
 
-    private Observer<NowPlaying> showNowPlaying = new Observer<NowPlaying>() {
+    private Observer<List<NowPlaying.Results>> showNowPlaying = new Observer<List<NowPlaying.Results>>() {
         @Override
-        public void onChanged(NowPlaying nowPlaying) {
+        public void onChanged(List<NowPlaying.Results> list) {
             //handler
             pb.setVisibility(View.INVISIBLE);
 
@@ -259,8 +289,8 @@ public class NowPlayingFragment extends Fragment {
 
 //            rv_now_playing.setItemAnimator(new DefaultItemAnimator());
 //            Parcelable rv_save_state = rv_now_playing.getLayoutManager().onSaveInstanceState();
-            NowPlayingAdapter adapter = new NowPlayingAdapter(getActivity());
-            adapter.setListNowPlaying(nowPlaying.getResults());
+
+            adapter.setListNowPlaying(list);
             rv_now_playing.setAdapter(adapter);
 //            rv_now_playing.getLayoutManager().onRestoreInstanceState(rv_save_state);
 //            adapter.notifyItemInserted(nowPlaying.getResults().size());
@@ -301,22 +331,23 @@ public class NowPlayingFragment extends Fragment {
                 @Override
                 public void onItemClicked(RecyclerView recyclerView, int position, View v) {
                     Bundle bundle = new Bundle();
-                    bundle.putString("title_bundle",nowPlaying.getResults().get(position).getTitle());
-                    bundle.putString("backdrop_bundle",nowPlaying.getResults().get(position).getBackdrop_path());
-                    bundle.putInt("id_bundle",nowPlaying.getResults().get(position).getId());
-                    bundle.putString("poster_bundle",nowPlaying.getResults().get(position).getPoster_path());
-                    bundle.putDouble("popularity_bundle",nowPlaying.getResults().get(position).getPopularity());
-                    bundle.putString("date_bundle",nowPlaying.getResults().get(position).getRelease_date());
-                    bundle.putDouble("avgvote_bundle",nowPlaying.getResults().get(position).getVote_average());
-                    bundle.putInt("vote_bundle",nowPlaying.getResults().get(position).getVote_count());
-                    bundle.putString("overview_bundle",nowPlaying.getResults().get(position).getOverview());
-                    bundle.putIntegerArrayList("genre_bundle",(ArrayList<Integer>) nowPlaying.getResults().get(position).getGenre_ids());
-                    bundle.putString("language_bundle",nowPlaying.getResults().get(position).getOriginal_language());
+                    bundle.putString("title_bundle",list.get(position).getTitle());
+                    bundle.putString("backdrop_bundle",list.get(position).getBackdrop_path());
+                    bundle.putInt("id_bundle",list.get(position).getId());
+                    bundle.putString("poster_bundle",list.get(position).getPoster_path());
+                    bundle.putDouble("popularity_bundle",list.get(position).getPopularity());
+                    bundle.putString("date_bundle",list.get(position).getRelease_date());
+                    bundle.putDouble("avgvote_bundle",list.get(position).getVote_average());
+                    bundle.putInt("vote_bundle",list.get(position).getVote_count());
+                    bundle.putString("overview_bundle",list.get(position).getOverview());
+                    bundle.putIntegerArrayList("genre_bundle",(ArrayList<Integer>) list.get(position).getGenre_ids());
+                    bundle.putString("language_bundle",list.get(position).getOriginal_language());
                     bundle.putString("from_bundle","Now Playing");
                     Navigation.findNavController(v).navigate(R.id.action_nowPlayingFragment_to_movieDetailsFragment,bundle);
                 }
             });
         }
+
     };
     public boolean isLastVisible() {
         LinearLayoutManager layoutManager =((LinearLayoutManager) rv_now_playing.getLayoutManager());

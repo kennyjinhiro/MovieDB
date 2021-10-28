@@ -27,6 +27,11 @@ public class UpcomingAdapter extends RecyclerView.Adapter<UpcomingAdapter.CardVi
     public void setListUpcoming(List<Upcoming.Results> listUpcoming){
         this.listUpcoming = listUpcoming;
     }
+    public void addListNowPlaying(List<Upcoming.Results> listUpcoming){
+        for (int i = 0; i < listUpcoming.size(); i++) {
+            this.listUpcoming.add(listUpcoming.get(i));
+        }
+    }
     public UpcomingAdapter(Context context){
         this.context = context;
     }
